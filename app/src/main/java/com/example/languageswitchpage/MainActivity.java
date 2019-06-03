@@ -24,13 +24,13 @@ public class MainActivity extends AppCompatActivity {
         initViews();
     }
 
-    private void initViews() {
+    private void initViews() { //инициализация
         spinner = findViewById(R.id.spinner_lang);
         spinner.setOnItemSelectedListener(itemSelectedListener);
         initSpinnerLang();
     }
 
-    private void initSpinnerLang() {
+    private void initSpinnerLang() {  //адаптер
 
         ArrayAdapter<CharSequence> adapterCountries = ArrayAdapter.createFromResource(this, R.array.language, android.R.layout.simple_spinner_item);
         adapterCountries.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
