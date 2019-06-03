@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">Локализованное приложение</string>
-    <string name="hello_world">Русскоязычная версия</string>
-    <string name="lang_text_en">Язык англ</string>
+    <string name="text_lang">Русскоязычная версия</string>
+    <string name="lang_text_en">английский</string>
     <string name="lang_text_ru">русский</string>
+    <string name="textView_text">Русскоязычгая версия</string>
+    <string-array name="language">
+        <item>английский</item>
+        <item>русский</item>
+    </string-array>
 </resources>

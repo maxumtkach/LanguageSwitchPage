@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">Locale Application</string>
-    <string name="hello_world">english version</string>
+    <string name="text_lang">english version</string>
     <string name="lang_text_en">Lang en</string>
     <string name="lang_text_ru">Lang ru</string>
+    <string name="textView_text">English version</string>
+    <string-array name="language">
+        <item>english</item>
+        <item>russian</item>
+    </string-array>
 </resources>

@@ -3,50 +3,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView"
+    <Spinner
+        android:id="@+id/spinner_lang"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="71dp"
-        android:layout_marginBottom="267dp"
-        android:text="@string/hello_world"
-        android:textSize="30dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_lang_ru" />
-
-    <Button
-        android:id="@+id/btn_lang"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="216dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="41dp"
-        android:onClick="langeClick"
-        android:text="@string/lang_text_en"
-        app:layout_constraintBottom_toTopOf="@+id/btn_lang_ru"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="200dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/btn_lang_ru"
+    <TextView
+        android:id="@+id/textView_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="161dp"
-        android:layout_marginTop="41dp"
-        android:layout_marginEnd="161dp"
-        android:layout_marginBottom="82dp"
-        android:onClick="langeRuClick"
-        android:text="@string/lang_text_ru"
-        app:layout_constraintBottom_toTopOf="@+id/textView"
+        android:layout_marginStart="171dp"
+        android:layout_marginTop="200dp"
+        android:layout_marginEnd="181dp"
+        android:layout_marginBottom="100dp"
+        android:text="@string/textView_text"
+        android:textSize="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_lang" />
+        app:layout_constraintTop_toBottomOf="@+id/spinner_lang" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
