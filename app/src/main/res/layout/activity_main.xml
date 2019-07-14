@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+android:background="@android:color/holo_orange_light"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,26 +9,95 @@
         android:id="@+id/spinner_lang"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:layout_marginBottom="200dp"
-        app:layout_constraintBottom_toTopOf="@+id/textView_text"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="65dp"
+        app:layout_constraintBottom_toTopOf="@+id/login"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/checkbox" />
+
+    <CheckBox
+        android:id="@+id/checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/login_storage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
+    <EditText
+        android:id="@+id/login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_marginTop="65dp"
+        android:layout_marginBottom="16dp"
+        android:background="@android:color/darker_gray"
+        android:hint="@string/login"
+        android:padding="8dp"
+        android:textSize="@dimen/size_32"
+        app:layout_constraintBottom_toTopOf="@+id/password"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_lang" />
+
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_marginBottom="295dp"
+        android:background="@android:color/darker_gray"
+        android:hint="@string/password"
+        android:padding="8dp"
+        android:textSize="@dimen/size_32"
+        app:layout_constraintBottom_toTopOf="@+id/btn_login"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_marginBottom="8dp"
+        android:background="@android:color/holo_green_light"
+        android:padding="8dp"
+        android:text="@string/login"
+        android:textSize="@dimen/size_32"
+        app:layout_constraintBottom_toTopOf="@+id/btn_registration"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <Button
+        android:id="@+id/btn_registration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/holo_red_dark"
+        android:padding="8dp"
+        android:text="@string/registration"
+        android:textSize="@dimen/size_32"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_login" />
+
 
     <TextView
         android:id="@+id/textView_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="171dp"
-        android:layout_marginTop="200dp"
         android:layout_marginEnd="181dp"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="20dp"
         android:text="@string/textView_text"
         android:textSize="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_lang" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

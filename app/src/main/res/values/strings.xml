@@ -3,7 +3,18 @@
     <string name="text_lang">Русскоязычная версия</string>
     <string name="lang_text_en">английский</string>
     <string name="lang_text_ru">русский</string>
-    <string name="textView_text">Русскоязычгая версия</string>
+    <string name="textView_text">Русскоязычная версия</string>
+    <string name="login_storage">Хранить логин во внешнем хранилище</string>
+    <string name="checked_text">Чекбокс активен</string>
+    <string name="not_checked_text">Чекбокс не активен</string>
+    <string name="login">login</string>
+    <string name="password">password</string>
+    <string name="registration">registration</string>
+    <string name="login_your">Ваш логин:</string>
+    <string name="pass_your">Ваш пароль:</string>
+    <string name="nou_pass_nou_login">Вы ничего не ввели</string>
+    <string name="read_text">прочитано</string>
+    <string name="save_text">сохранено</string>
     <string-array name="language">
         <item>английский</item>
         <item>русский</item>

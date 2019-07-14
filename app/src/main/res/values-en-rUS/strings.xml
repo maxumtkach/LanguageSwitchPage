@@ -4,6 +4,17 @@
     <string name="lang_text_en">Lang en</string>
     <string name="lang_text_ru">Lang ru</string>
     <string name="textView_text">English version</string>
+    <string name="login_storage">Store username in external storage</string>
+    <string name="checked_text">checked</string>
+    <string name="not_checked_text">not checked</string>
+    <string name="login">login</string>
+    <string name="password">password</string>
+    <string name="registration">registration</string>
+    <string name="login_your">login your:</string>
+    <string name="pass_your">pass your:</string>
+    <string name="nou_pass_nou_login">nou pass nou login</string>
+    <string name="read_text">read</string>
+    <string name="save_text">save</string>
     <string-array name="language">
         <item>english</item>
         <item>russian</item>
