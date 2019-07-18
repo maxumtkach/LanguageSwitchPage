@@ -4,7 +4,7 @@
     <string name="lang_text_en">английский</string>
     <string name="lang_text_ru">русский</string>
     <string name="textView_text">Русскоязычная версия</string>
-    <string name="login_storage">Хранить логин во внешнем хранилище</string>
+    <string name="saving_to_internal_storage">сохранено во внутреннее хранилище</string>
     <string name="checked_text">Чекбокс активен</string>
     <string name="not_checked_text">Чекбокс не активен</string>
     <string name="login">login</string>
@@ -15,6 +15,13 @@
     <string name="nou_pass_nou_login">Вы ничего не ввели</string>
     <string name="read_text">прочитано</string>
     <string name="save_text">сохранено</string>
+    <string name="repeat_input">Введите еще раз пароль и логин</string>
+    <string name="pass_log_ok">верный пароль и логин</string>
+    <string name="false_pass_log">не верный пароль и логин</string>
+    <string name="access">доступ</string>
+    <string name="no_access">нет доступа</string>
+    <string name="saving_to_external_storage">сохранено во внешнее хранилище</string>
+    <string name="data_obtained_from_external_memory">Данные получены из внешней памяти</string>
     <string-array name="language">
         <item>английский</item>
         <item>русский</item>

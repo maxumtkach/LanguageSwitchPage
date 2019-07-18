@@ -2,12 +2,12 @@ package com.example.languageswitchpage;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,13 +19,10 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Locale;
@@ -34,109 +31,192 @@ public class MainActivity extends AppCompatActivity {
 
     private CheckBox checkBox;
     private Spinner spinner;
-    private final String CHECK = "check";
-    private static final String LOGIN_FILE_NAME = "login_text";
-    private static final String PASS_FILE_NAME = "pass_text";
-    private static final String MY_LOG_PAS = "my log pas";
+    private final String IS_CHECK = " is checked";
+    private final String NOT_CHECK = "not checked";
+    private static final String LOGIN_FILE_NAME = "login text";
+    private static final String PASS_FILE_NAME = "pass text";
+    private String filePath = "MyFileStorage";
+    private String fileName = "mFile.txt";
+    private File mFile;
+
     private EditText loginTextView;
     private EditText passwordTextView;
-    Button loginButton;
-    Button registrationButton;
+    private Button loginButton;
+    private Button registrationButton;
+    private String loginStr;
+    private String passwordStr;
+    private String loginReturn;
+    private String passReturn;
+    private Editable loginEditable;
+    private Editable passEditable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         initViews();
+
+        loginEditable = loginTextView.getText();
+        passEditable = passwordTextView.getText();
+
         initSpinnerLang();
         setCheckChange();
-        loadView();
+        noCheckLoadView();
     }
 
-    void loadView() {
-        SharedPreferences sPref = getPreferences(MODE_PRIVATE);
-        boolean sPrefBoolean = sPref.getBoolean(CHECK, true);
+    void noCheckLoadView() {
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);   //при включ-ии прил. чек активен
+        boolean sPrefBoolean = sharedPreferences.getBoolean(NOT_CHECK, false);
+        boolean sPref = sharedPreferences.getBoolean(IS_CHECK, true);
+        checkBox.setChecked(sPref);
         checkBox.setChecked(sPrefBoolean);
-        // Toast.makeText(this, "CHECK loaded", Toast.LENGTH_SHORT).show();
-    }
-
-
-    private void initViews() { //инициализация
-        checkBox = findViewById(R.id.checkbox);
-        spinner = findViewById(R.id.spinner_lang);
-        spinner.setOnItemSelectedListener(itemSelectedListener);
-        loginTextView = findViewById(R.id.login);
-        passwordTextView = findViewById(R.id.password);
-        loginButton = findViewById(R.id.btn_login);
-        registrationButton = findViewById(R.id.btn_registration);
-
     }
 
     public void setCheckChange() {
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
                 if (buttonView.isChecked()) {
-                    // checked
-                    registrationButton.setOnClickListener(new View.OnClickListener() {  //сохраняем файл
+
+                    registrationButton.setOnClickListener(new View.OnClickListener() {  // onclick  сохраняем файл
                         @Override
                         public void onClick(View v) {
-                            String loginStr = loginTextView.getText().toString();
-                            String passwordStr = passwordTextView.getText().toString();
 
-                            if (loginStr.equals("") || passwordStr.equals("")) {
-                                Toast.makeText(MainActivity.this, (R.string.nou_pass_nou_login), Toast.LENGTH_LONG).show();
+                            loginStr = loginTextView.getText().toString();
+                            passwordStr = passwordTextView.getText().toString();
+
+                            if (textUtilsValue(loginStr, passwordStr)) {
+                                showToast(getString(R.string.nou_pass_nou_login));
                             } else {
 
-                                saveData(LOGIN_FILE_NAME, loginStr);
+                                saveData(LOGIN_FILE_NAME, loginStr);  ///сохраняем файл во внутр. хр.
                                 saveData(PASS_FILE_NAME, passwordStr);
+                                showToast(getString(R.string.saving_to_internal_storage));
                             }
                         }
                     });
 
-                    loginButton.setOnClickListener(new View.OnClickListener() {   //читаем файл
+                    loginButton.setOnClickListener(new View.OnClickListener() {   // onclick читаем файл
                         @Override
-                        public void onClick(View v) { //--------------------------------------------------------------
+                        public void onClick(View v) { //-----------------------------------
 
-                            readLineFromFile(LOGIN_FILE_NAME);
-                            readLineFromFile(PASS_FILE_NAME);
+                            if (textUtilsValue(loginStr, passwordStr)) {
+                                showToast(getString(R.string.nou_pass_nou_login));
+                            } else {
+                                loginReturn = readLineFromFile(LOGIN_FILE_NAME);   //читаем файл
+                                passReturn = readLineFromFile(PASS_FILE_NAME);
+                            }
+
+                            if (loginEditable.toString().equals(loginReturn) &&
+                                    passEditable.toString().equals(passReturn)) {
+                                showToast(getString(R.string.access));
+                            } else {
+                                showToast(getString(R.string.no_access));
+                            }
                         }
                     });
-                    Toast.makeText(MainActivity.this, (R.string.checked_text), Toast.LENGTH_LONG).show();
+
                 } else {
-                    // not checked
-                    Toast.makeText(MainActivity.this, (R.string.not_checked_text), Toast.LENGTH_LONG).show();
-
-                    File myFile = new File(Environment.getExternalStorageDirectory(), MY_LOG_PAS);
-                    if (myFile.canRead()) {
-                        try {
-                            FileReader fileReader = new FileReader(myFile);
-                            BufferedReader bufferedReader = new BufferedReader(fileReader);
-                            bufferedReader.readLine();
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                    // no checked   работаем с внешним хр.
+                    if (!isAvailable() || isReadOnly()) {
+                        // если доступа нет, то делаем кнопки для сохранения не актив.
+                        // и считывания с внешней памяти неактивными
+                        registrationButton.setEnabled(false);
+                        loginButton.setEnabled(false);
+                    } else {
+                        // если доступ есть, то создаем файл в ExternalStorage
+                        mFile = new File(getExternalFilesDir(filePath), fileName);
                     }
-                    if (myFile.canWrite()) {
-                        try {
-                            FileWriter fileWriter = new FileWriter(myFile);
-                            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-                            bufferedWriter.newLine();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
 
-                    }
+                    registrationButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {  // онклик сохранения
+
+                            loginStr = loginTextView.getText().toString();
+                            passwordStr = passwordTextView.getText().toString();
+
+                            if (textUtilsValue(loginStr, passwordStr)) {
+                                showToast(getString(R.string.nou_pass_nou_login));
+                            } else {
+
+                                saveExt(loginStr + passwordStr);  ///сохраняем файл
+                                //  saveExt(passwordStr);
+                                showToast(getString(R.string.saving_to_external_storage));
+                            }
+                        }
+                    });
+
+                    loginButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {  //онклик чтения
+                            String massage = null;
+
+                            if (textUtilsValue(loginStr, passwordStr)) {
+                                showToast(getString(R.string.nou_pass_nou_login));
+                            } else {  //считываем из внешнее
+                                massage = readLineFromFileExt(mFile);
+                                showToast(getString(R.string.data_obtained_from_external_memory));
+                            }
+
+                            if ((loginEditable.toString() + passEditable.toString()).equals(massage)) {
+                                showToast(getString(R.string.access));
+                            } else {
+                                showToast(getString(R.string.no_access));
+                            }
+                        }
+                    });
                 }
             }
-
         });
     }
 
-    private String readLineFromFile(String fileName) {   //read
+    private static boolean isReadOnly() {      // проверяем есть ли доступ к внешнему хранилищу
+        String storageState = Environment.getExternalStorageState();
+        return Environment.MEDIA_MOUNTED_READ_ONLY.equals(storageState);
+    }
+
+    // проверяем есть ли доступ к внешнему хранилищу
+    private static boolean isAvailable() {
+        String storageState = Environment.getExternalStorageState();
+        return Environment.MEDIA_MOUNTED.equals(storageState);
+    }
+
+    private static boolean textUtilsValue(String str1, String str2) {  // условие не пустых полей строк
+        if (TextUtils.isEmpty(str1) || TextUtils.isEmpty(str2)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void showToast(String message) {  // тост ф-я
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private String readLineFromFileExt(File file) {   //read   внешний
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(file);
+            DataInputStream in = new DataInputStream(fis);
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            return br.readLine();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            try {
+                if (fis != null) {
+                    fis.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private String readLineFromFile(String fileName) {   //read   внутренний
         FileInputStream fis = null;
         try {
             fis = openFileInput(fileName);
@@ -156,14 +236,24 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-    }
+    }     //ф-я чтения. во внутр. ф-л
 
-    private void saveData(String fileName, String text) {  //save
+    private void saveExt(String editText) {
+        FileOutputStream fos;
+        try {
+            fos = new FileOutputStream(mFile);
+            fos.write(editText.getBytes());
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }     //ф-я сохр. во внешн. ф-л
+
+    private void saveData(String fileName, String text) {  //save во внутр.
         FileOutputStream fos = null;
         try {
             fos = openFileOutput(fileName, MODE_PRIVATE);
             fos.write(text.getBytes());
-            //  Toast.makeText(MainActivity.this, (R.string.save_text), Toast.LENGTH_LONG).show();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -175,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-    }
+    }  //ф-я сохр. во внутр. ф-л
 
     private void initSpinnerLang() {  //адаптер
 
@@ -185,7 +275,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     AdapterView.OnItemSelectedListener itemSelectedListener = new AdapterView.OnItemSelectedListener() {
-        @Override
+        @Override             // перекл. языка
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
             // Получаем выбранный объект
@@ -209,9 +299,21 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onNothingSelected(AdapterView<?> parent) {
+        public void onNothingSelected(AdapterView<?> parent) {  //смена языка
 
         }
     };
+
+    private void initViews() { //инициализация
+        checkBox = findViewById(R.id.checkbox);
+        spinner = findViewById(R.id.spinner_lang);
+        spinner.setOnItemSelectedListener(itemSelectedListener);
+        loginTextView = findViewById(R.id.login);
+        passwordTextView = findViewById(R.id.password);
+        loginButton = findViewById(R.id.btn_login);
+        registrationButton = findViewById(R.id.btn_registration);
+
+    }
+
 }
 

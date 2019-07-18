@@ -4,7 +4,7 @@
     <string name="lang_text_en">Lang en</string>
     <string name="lang_text_ru">Lang ru</string>
     <string name="textView_text">English version</string>
-    <string name="login_storage">Store username in external storage</string>
+    <string name="saving_to_internal_storage">saving to internal storage</string>
     <string name="checked_text">checked</string>
     <string name="not_checked_text">not checked</string>
     <string name="login">login</string>
@@ -15,6 +15,13 @@
     <string name="nou_pass_nou_login">nou pass nou login</string>
     <string name="read_text">read</string>
     <string name="save_text">save</string>
+    <string name="repeat_input">repeat input</string>
+    <string name="pass_log_ok">pass log ok</string>
+    <string name="false_pass_log">false pass log</string>
+    <string name="access">access</string>
+    <string name="no_access">no access</string>
+    <string name="saving_to_external_storage">saving to external storage</string>
+    <string name="data_obtained_from_external_memory">Data obtained from external memory</string>
     <string-array name="language">
         <item>english</item>
         <item>russian</item>
