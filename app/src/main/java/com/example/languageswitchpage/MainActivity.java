@@ -31,8 +31,11 @@ public class MainActivity extends AppCompatActivity {
 
     private CheckBox checkBox;
     private Spinner spinner;
-    private final String IS_CHECK = " is checked";
-    private final String NOT_CHECK = "not checked";
+    private static final String IS_CHECK = " is checked";
+    private static final String NOT_CHECK = "not checked";
+    private static final String PREFS_FILE = "Account";
+    //  private static final String PREF_NAME = "Name";
+
     private static final String LOGIN_FILE_NAME = "login text";
     private static final String PASS_FILE_NAME = "pass text";
     private String filePath = "MyFileStorage";
@@ -43,12 +46,10 @@ public class MainActivity extends AppCompatActivity {
     private EditText passwordTextView;
     private Button loginButton;
     private Button registrationButton;
-    private String loginStr;
-    private String passwordStr;
-    private String loginReturn;
-    private String passReturn;
+
     private Editable loginEditable;
     private Editable passEditable;
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,15 +62,23 @@ public class MainActivity extends AppCompatActivity {
 
         initSpinnerLang();
         setCheckChange();
-        noCheckLoadView();
+        saveSharedPreferences();
+        checkBol();
     }
 
-    void noCheckLoadView() {
-        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);   //при включ-ии прил. чек активен
-        boolean sPrefBoolean = sharedPreferences.getBoolean(NOT_CHECK, false);
-        boolean sPref = sharedPreferences.getBoolean(IS_CHECK, true);
-        checkBox.setChecked(sPref);
-        checkBox.setChecked(sPrefBoolean);
+    private void saveSharedPreferences() {
+
+        sharedPreferences = getSharedPreferences(PREFS_FILE, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(IS_CHECK, true);
+        editor.putBoolean(NOT_CHECK, false);
+        editor.apply();
+    }
+
+    private void checkBol() {
+
+        boolean booleanCheck = sharedPreferences.getBoolean(IS_CHECK, true);
+        checkBox.setChecked(booleanCheck);
     }
 
     public void setCheckChange() {
@@ -83,8 +92,8 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
 
-                            loginStr = loginTextView.getText().toString();
-                            passwordStr = passwordTextView.getText().toString();
+                            String loginStr = loginTextView.getText().toString();
+                            String passwordStr = passwordTextView.getText().toString();
 
                             if (textUtilsValue(loginStr, passwordStr)) {
                                 showToast(getString(R.string.nou_pass_nou_login));
@@ -100,6 +109,12 @@ public class MainActivity extends AppCompatActivity {
                     loginButton.setOnClickListener(new View.OnClickListener() {   // onclick читаем файл
                         @Override
                         public void onClick(View v) { //-----------------------------------
+
+                            String loginReturn = null;
+                            String passReturn = null;
+                            String loginStr = loginTextView.getText().toString();
+                            String passwordStr = passwordTextView.getText().toString();
+
 
                             if (textUtilsValue(loginStr, passwordStr)) {
                                 showToast(getString(R.string.nou_pass_nou_login));
@@ -119,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
 
                 } else {
                     // no checked   работаем с внешним хр.
+
                     if (!isAvailable() || isReadOnly()) {
                         // если доступа нет, то делаем кнопки для сохранения не актив.
                         // и считывания с внешней памяти неактивными
@@ -133,8 +149,8 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {  // онклик сохранения
 
-                            loginStr = loginTextView.getText().toString();
-                            passwordStr = passwordTextView.getText().toString();
+                            String loginStr = loginTextView.getText().toString();
+                            String passwordStr = passwordTextView.getText().toString();
 
                             if (textUtilsValue(loginStr, passwordStr)) {
                                 showToast(getString(R.string.nou_pass_nou_login));
@@ -151,6 +167,8 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {  //онклик чтения
                             String massage = null;
+                            String loginStr = loginTextView.getText().toString();
+                            String passwordStr = passwordTextView.getText().toString();
 
                             if (textUtilsValue(loginStr, passwordStr)) {
                                 showToast(getString(R.string.nou_pass_nou_login));
@@ -183,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private static boolean textUtilsValue(String str1, String str2) {  // условие не пустых полей строк
+
         if (TextUtils.isEmpty(str1) || TextUtils.isEmpty(str2)) {
             return true;
         } else {
