@@ -47,8 +47,6 @@ public class MainActivity extends AppCompatActivity {
     private Button loginButton;
     private Button registrationButton;
 
-    private Editable loginEditable;
-    private Editable passEditable;
     SharedPreferences sharedPreferences;
 
     @Override
@@ -56,9 +54,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initViews();
-
-        loginEditable = loginTextView.getText();
-        passEditable = passwordTextView.getText();
 
         initSpinnerLang();
         setCheckChange();
@@ -108,26 +103,27 @@ public class MainActivity extends AppCompatActivity {
 
                     loginButton.setOnClickListener(new View.OnClickListener() {   // onclick читаем файл
                         @Override
-                        public void onClick(View v) { //-----------------------------------
+                        public void onClick(View v) { //--------------------------------------------------------------
 
-                            String loginReturn = null;
-                            String passReturn = null;
                             String loginStr = loginTextView.getText().toString();
                             String passwordStr = passwordTextView.getText().toString();
 
-
-                            if (textUtilsValue(loginStr, passwordStr)) {
-                                showToast(getString(R.string.nou_pass_nou_login));
+                            if (TextUtils.isEmpty(loginStr) || TextUtils.isEmpty(passwordStr)) {
+                                Toast.makeText(MainActivity.this, (R.string.nou_pass_nou_login), Toast.LENGTH_LONG).show();
                             } else {
-                                loginReturn = readLineFromFile(LOGIN_FILE_NAME);   //читаем файл
-                                passReturn = readLineFromFile(PASS_FILE_NAME);
-                            }
+                                String savedLogin = readLineFromFile(LOGIN_FILE_NAME);   //читаем файл
+                                String savedPassword = readLineFromFile(PASS_FILE_NAME);
+                                final boolean loginEquals = loginTextView.getText().toString().equals(savedLogin);
+                                final boolean passwordEquals = passwordTextView.getText().toString().equals(savedPassword);
+                                if (loginEquals && passwordEquals) {
 
-                            if (loginEditable.toString().equals(loginReturn) &&
-                                    passEditable.toString().equals(passReturn)) {
-                                showToast(getString(R.string.access));
-                            } else {
-                                showToast(getString(R.string.no_access));
+                                    Toast.makeText(MainActivity.this, (R.string.access), Toast.LENGTH_LONG).show();
+
+                                } else {
+                                    Toast.makeText(MainActivity.this, (R.string.no_access), Toast.LENGTH_LONG).show();
+
+                                }
+
                             }
                         }
                     });
@@ -136,8 +132,7 @@ public class MainActivity extends AppCompatActivity {
                     // no checked   работаем с внешним хр.
 
                     if (!isAvailable() || isReadOnly()) {
-                        // если доступа нет, то делаем кнопки для сохранения не актив.
-                        // и считывания с внешней памяти неактивными
+
                         registrationButton.setEnabled(false);
                         loginButton.setEnabled(false);
                     } else {
@@ -166,21 +161,22 @@ public class MainActivity extends AppCompatActivity {
                     loginButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {  //онклик чтения
-                            String massage = null;
                             String loginStr = loginTextView.getText().toString();
                             String passwordStr = passwordTextView.getText().toString();
 
                             if (textUtilsValue(loginStr, passwordStr)) {
                                 showToast(getString(R.string.nou_pass_nou_login));
                             } else {  //считываем из внешнее
-                                massage = readLineFromFileExt(mFile);
+                                String massage = readLineFromFileExt(mFile);
                                 showToast(getString(R.string.data_obtained_from_external_memory));
-                            }
+                                final boolean loginEquals = (loginTextView.getText().toString()
+                                        +passwordTextView.getText().toString()).equals(massage);
 
-                            if ((loginEditable.toString() + passEditable.toString()).equals(massage)) {
-                                showToast(getString(R.string.access));
-                            } else {
-                                showToast(getString(R.string.no_access));
+                                if (loginEquals) {
+                                    showToast(getString(R.string.access));
+                                } else {
+                                    showToast(getString(R.string.no_access));
+                                }
                             }
                         }
                     });
