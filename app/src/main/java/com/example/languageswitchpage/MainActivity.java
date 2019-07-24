@@ -239,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void onClickRegistration(View view) {
+    public void onClickRegistration(View view) {           //  сохраняем
         String loginStr = loginTextView.getText().toString();
         String passwordStr = passwordTextView.getText().toString();
         if (textUtilsValue(loginStr, passwordStr)) {
@@ -266,14 +266,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void onClickLogin(View view) {
+    public void onClickLogin(View view) {    // читаем
         String loginStr = loginTextView.getText().toString();
         String passwordStr = passwordTextView.getText().toString();
         if (textUtilsValue(loginStr, passwordStr)) {
             showToast(getString(R.string.nou_pass_nou_login));
         } else {
             if (checkBox.isChecked()) {
-                String savedLogin = readLineFromFile(LOGIN_FILE_NAME);   //читаем файл
+                String savedLogin = readLineFromFile(LOGIN_FILE_NAME);
                 String savedPassword = readLineFromFile(PASS_FILE_NAME);
                 final boolean loginEquals = loginTextView.getText().toString().equals(savedLogin);
                 final boolean passwordEquals = passwordTextView.getText().toString().equals(savedPassword);
