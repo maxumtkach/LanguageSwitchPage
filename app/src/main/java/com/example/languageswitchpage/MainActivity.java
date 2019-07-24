@@ -32,9 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private CheckBox checkBox;
     private Spinner spinner;
     private static final String IS_CHECK = " is checked";
-    private static final String NOT_CHECK = "not checked";
     private static final String PREFS_FILE = "Account";
-    //  private static final String PREF_NAME = "Name";
 
     private static final String LOGIN_FILE_NAME = "login text";
     private static final String PASS_FILE_NAME = "pass text";
@@ -66,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(PREFS_FILE, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(IS_CHECK, true);
-        editor.putBoolean(NOT_CHECK, false);
         editor.apply();
     }
 
@@ -80,110 +77,14 @@ public class MainActivity extends AppCompatActivity {
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                if (buttonView.isChecked()) {
-
-                    registrationButton.setOnClickListener(new View.OnClickListener() {  // onclick  сохраняем файл
-                        @Override
-                        public void onClick(View v) {
-
-                            String loginStr = loginTextView.getText().toString();
-                            String passwordStr = passwordTextView.getText().toString();
-
-                            if (textUtilsValue(loginStr, passwordStr)) {
-                                showToast(getString(R.string.nou_pass_nou_login));
-                            } else {
-
-                                saveData(LOGIN_FILE_NAME, loginStr);  ///сохраняем файл во внутр. хр.
-                                saveData(PASS_FILE_NAME, passwordStr);
-                                showToast(getString(R.string.saving_to_internal_storage));
-                            }
-                        }
-                    });
-
-                    loginButton.setOnClickListener(new View.OnClickListener() {   // onclick читаем файл
-                        @Override
-                        public void onClick(View v) { //--------------------------------------------------------------
-
-                            String loginStr = loginTextView.getText().toString();
-                            String passwordStr = passwordTextView.getText().toString();
-
-                            if (TextUtils.isEmpty(loginStr) || TextUtils.isEmpty(passwordStr)) {
-                                Toast.makeText(MainActivity.this, (R.string.nou_pass_nou_login), Toast.LENGTH_LONG).show();
-                            } else {
-                                String savedLogin = readLineFromFile(LOGIN_FILE_NAME);   //читаем файл
-                                String savedPassword = readLineFromFile(PASS_FILE_NAME);
-                                final boolean loginEquals = loginTextView.getText().toString().equals(savedLogin);
-                                final boolean passwordEquals = passwordTextView.getText().toString().equals(savedPassword);
-                                if (loginEquals && passwordEquals) {
-
-                                    Toast.makeText(MainActivity.this, (R.string.access), Toast.LENGTH_LONG).show();
-
-                                } else {
-                                    Toast.makeText(MainActivity.this, (R.string.no_access), Toast.LENGTH_LONG).show();
-
-                                }
-
-                            }
-                        }
-                    });
-
-                } else {
-                    // no checked   работаем с внешним хр.
-
-                    if (!isAvailable() || isReadOnly()) {
-
-                        registrationButton.setEnabled(false);
-                        loginButton.setEnabled(false);
-                    } else {
-                        // если доступ есть, то создаем файл в ExternalStorage
-                        mFile = new File(getExternalFilesDir(filePath), fileName);
-                    }
-
-                    registrationButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {  // онклик сохранения
-
-                            String loginStr = loginTextView.getText().toString();
-                            String passwordStr = passwordTextView.getText().toString();
-
-                            if (textUtilsValue(loginStr, passwordStr)) {
-                                showToast(getString(R.string.nou_pass_nou_login));
-                            } else {
-
-                                saveExt(loginStr + passwordStr);  ///сохраняем файл
-                                //  saveExt(passwordStr);
-                                showToast(getString(R.string.saving_to_external_storage));
-                            }
-                        }
-                    });
-
-                    loginButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {  //онклик чтения
-                            String loginStr = loginTextView.getText().toString();
-                            String passwordStr = passwordTextView.getText().toString();
-
-                            if (textUtilsValue(loginStr, passwordStr)) {
-                                showToast(getString(R.string.nou_pass_nou_login));
-                            } else {  //считываем из внешнее
-                                String massage = readLineFromFileExt(mFile);
-                                showToast(getString(R.string.data_obtained_from_external_memory));
-                                final boolean loginEquals = (loginTextView.getText().toString()
-                                        +passwordTextView.getText().toString()).equals(massage);
-
-                                if (loginEquals) {
-                                    showToast(getString(R.string.access));
-                                } else {
-                                    showToast(getString(R.string.no_access));
-                                }
-                            }
-                        }
-                    });
-                }
+                sharedPreferences
+                        .edit()
+                        .putBoolean(IS_CHECK, isChecked)
+                        .apply();
             }
         });
     }
+
 
     private static boolean isReadOnly() {      // проверяем есть ли доступ к внешнему хранилищу
         String storageState = Environment.getExternalStorageState();
@@ -251,20 +152,28 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-    }     //ф-я чтения. во внутр. ф-л
+    }
 
-    private void saveExt(String editText) {
-        FileOutputStream fos;
+    private void saveExtData(String editText) {    //сохр во внешний файл
+        FileOutputStream fos = null;
         try {
             fos = new FileOutputStream(mFile);
             fos.write(editText.getBytes());
             fos.close();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (fos != null) {
+                    fos.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-    }     //ф-я сохр. во внешн. ф-л
+    }
 
-    private void saveData(String fileName, String text) {  //save во внутр.
+    private void saveIntData(String fileName, String text) {  //save во внутр.
         FileOutputStream fos = null;
         try {
             fos = openFileOutput(fileName, MODE_PRIVATE);
@@ -280,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-    }  //ф-я сохр. во внутр. ф-л
+    }
 
     private void initSpinnerLang() {  //адаптер
 
@@ -330,5 +239,66 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void onClickRegistration(View view) {
+        String loginStr = loginTextView.getText().toString();
+        String passwordStr = passwordTextView.getText().toString();
+        if (textUtilsValue(loginStr, passwordStr)) {
+            showToast(getString(R.string.nou_pass_nou_login));
+        } else {
+            if (checkBox.isChecked()) {
+                saveIntData(LOGIN_FILE_NAME, loginStr);
+                saveIntData(PASS_FILE_NAME, passwordStr);
+                showToast(getString(R.string.saving_to_internal_storage));
+            } else {
+
+                if (!isAvailable() || isReadOnly()) {
+
+                    registrationButton.setEnabled(false);
+                    loginButton.setEnabled(false);
+                } else {
+                    // если доступ есть, то создаем файл в ExternalStorage
+                    mFile = new File(getExternalFilesDir(filePath), fileName);
+                }
+                saveExtData(loginStr + passwordStr);
+                showToast(getString(R.string.saving_to_external_storage));
+
+            }
+        }
+    }
+
+    public void onClickLogin(View view) {
+        String loginStr = loginTextView.getText().toString();
+        String passwordStr = passwordTextView.getText().toString();
+        if (textUtilsValue(loginStr, passwordStr)) {
+            showToast(getString(R.string.nou_pass_nou_login));
+        } else {
+            if (checkBox.isChecked()) {
+                String savedLogin = readLineFromFile(LOGIN_FILE_NAME);   //читаем файл
+                String savedPassword = readLineFromFile(PASS_FILE_NAME);
+                final boolean loginEquals = loginTextView.getText().toString().equals(savedLogin);
+                final boolean passwordEquals = passwordTextView.getText().toString().equals(savedPassword);
+                if (loginEquals && passwordEquals) {
+
+                    Toast.makeText(MainActivity.this, (R.string.access), Toast.LENGTH_LONG).show();
+
+                } else {
+                    Toast.makeText(MainActivity.this, (R.string.no_access), Toast.LENGTH_LONG).show();
+
+                }
+
+            } else {
+                String massage = readLineFromFileExt(mFile);
+                showToast(getString(R.string.data_obtained_from_external_memory));
+                final boolean loginEquals = (loginTextView.getText().toString()
+                        + passwordTextView.getText().toString()).equals(massage);
+
+                if (loginEquals) {
+                    showToast(getString(R.string.access));
+                } else {
+                    showToast(getString(R.string.no_access));
+                }
+            }
+        }
+    }
 }
 

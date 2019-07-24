@@ -61,6 +61,7 @@ android:background="@android:color/holo_orange_light"
 
     <Button
         android:id="@+id/btn_login"
+        android:onClick="onClickLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
@@ -75,6 +76,7 @@ android:background="@android:color/holo_orange_light"
 
     <Button
         android:id="@+id/btn_registration"
+        android:onClick="onClickRegistration"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
